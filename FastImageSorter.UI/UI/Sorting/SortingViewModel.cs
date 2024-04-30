@@ -85,12 +85,39 @@ public class SortingViewModel : ViewModelBase
 
     private bool CanExecuteSorting()
     {
-        return this.FinishedSorting;
+        return true;
     }
 
     private void ExecuteSorting()
     {
-        throw new NotImplementedException();
+        foreach (var bucket in this.SettingsViewModel.Buckets)
+        {
+            if (bucket.Action == BucketAction.Skip)
+                continue;
+
+            foreach (var item in bucket.Items)
+            {
+                if (bucket.Action == BucketAction.Delete)
+                {
+                    File.Delete(item.Path);
+                    continue;
+                }
+
+                var targetFileName = Path.Combine(bucket.TargetDirectoryPath, item.File.Name);
+
+                if (File.Exists(targetFileName))
+                    continue;
+
+                if (bucket.Action == BucketAction.Move)
+                {
+                    File.Move(item.Path, targetFileName);
+                }
+                else
+                {
+                    File.Copy(item.Path, targetFileName);
+                }
+            }
+        }
     }
 
     public void SortItem(Key key)

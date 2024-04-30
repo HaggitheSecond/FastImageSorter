@@ -11,6 +11,7 @@
              mc:Ignorable="d">
     <UserControl.Resources>
         <conv:KeyToStringConverter x:Key="KeyToStringConverter" />
+        <CollectionViewSource x:Key="AvailableActionsKey" Source="{Binding AvailableActions}"/>
     </UserControl.Resources>
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -88,7 +89,12 @@
                                 <Button Command="{Binding SetKeyCommand}" Content="Set key" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
+                    </DataGridTemplateColumn>                    
+                    <DataGridComboBoxColumn Width="70"
+                                            Header="Action"
+                                            ItemsSource="{Binding Source={StaticResource AvailableActionsKey}}"
+                                            SelectedValueBinding="{Binding Action}">
+                    </DataGridComboBoxColumn>
                     <DataGridTextColumn Width="*"
                                         Binding="{Binding TargetDirectoryPath}"
                                         Header="Target directory"

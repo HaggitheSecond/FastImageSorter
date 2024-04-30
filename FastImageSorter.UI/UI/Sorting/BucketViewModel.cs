@@ -19,6 +19,11 @@ namespace FastImageSorter.UI.UI
         private Key? _key;
         private ObservableCollection<BucketItemViewModel> items;
 
+        private BucketAction _action;
+        private ObservableCollection<BucketAction> _availableActions;
+
+        private bool _canBeEdited;
+
         public string Name
 		{
 			get { return this._name; }
@@ -43,16 +48,35 @@ namespace FastImageSorter.UI.UI
             set { this.SetProperty(ref this.items, value, () => this.Items); }
         }
 
+        public BucketAction Action
+        {
+            get { return this._action; }
+            set { this.SetProperty(ref this._action, value, () => this.Action); }
+        }
+
+        public ObservableCollection<BucketAction> AvailableActions
+        {
+            get { return this._availableActions; }
+            set { this.SetProperty(ref this._availableActions, value, () => this.AvailableActions); }
+        }
+
+        public bool CanBeEdited
+        {
+            get { return this._canBeEdited; }
+            set { this.SetProperty(ref this._canBeEdited, value, () => this.CanBeEdited); }
+        }
+
         public DelegateCommand SetTargetDirectoryCommand { get; }
 
 		public DelegateCommand SetKeyCommand { get; }
 
         public BucketViewModel()
         {
-            this.SetTargetDirectoryCommand = new DelegateCommand(this.SetTargetDirectory);
-            this.SetKeyCommand = new DelegateCommand(this.SetKey);
+            this.SetTargetDirectoryCommand = new DelegateCommand(this.SetTargetDirectory, () => this.CanBeEdited);
+            this.SetKeyCommand = new DelegateCommand(this.SetKey, () => this.CanBeEdited);
 
             this.Items = new ObservableCollection<BucketItemViewModel>();
+            this.AvailableActions = new ObservableCollection<BucketAction>(Enum.GetValues<BucketAction>());
         }
 
         private void SetKey()
@@ -76,5 +100,13 @@ namespace FastImageSorter.UI.UI
                 this.TargetDirectoryPath = dialog.FolderName;
             }
         }
+    }
+
+    public enum BucketAction
+    {
+        Skip,
+        Move,
+        Copy,
+        Delete
     }
 }

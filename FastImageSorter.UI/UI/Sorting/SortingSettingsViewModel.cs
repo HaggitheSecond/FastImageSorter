@@ -16,6 +16,7 @@ namespace FastImageSorter.UI.UI.Sorting
         private ObservableCollection<BucketViewModel> _buckets;
         private BucketViewModel _selectedBucket;
         private int _sourceDirectoryImageCount;
+        private ObservableCollection<BucketAction> _availableActions;
 
         public string SourceDirectoryPath
         {
@@ -50,6 +51,12 @@ namespace FastImageSorter.UI.UI.Sorting
             set { this.SetProperty(ref this._selectedBucket, value, () => this.SelectedBucket); }
         }
 
+        public ObservableCollection<BucketAction> AvailableActions
+        {
+            get { return this._availableActions; }
+            set { this.SetProperty(ref this._availableActions, value, () => this.AvailableActions); }
+        }
+
         public DelegateCommand SelectSourceDirectoryCommand { get; set; }
 
         public DelegateCommand AddBucketCommand { get; set; }
@@ -64,15 +71,27 @@ namespace FastImageSorter.UI.UI.Sorting
             this.SelectSourceDirectoryCommand = new DelegateCommand(this.SelectSourceDirectory);
 
             this.AddBucketCommand = new DelegateCommand(this.AddBucket, () => this.Buckets.Count <= 10);
-            this.RemoveBucketCommand = new DelegateCommand(this.RemoveBucket, () => this.SelectedBucket != null);
+            this.RemoveBucketCommand = new DelegateCommand(this.RemoveBucket, () => this.SelectedBucket != null && this.SelectedBucket.CanBeEdited);
 
             this.AcceptCommand = new DelegateCommand(this.Accept);
 
-            this.Buckets = new ObservableCollection<BucketViewModel>();
+            this.Buckets =
+            [
+                new BucketViewModel
+                {
+                    Name = "Skip",
+                    Action = BucketAction.Skip,
+                    Key = System.Windows.Input.Key.Space,
+                    CanBeEdited = false
+                },
+            ];
 
-            if (Debugger.IsAttached)
+            this.AvailableActions = new ObservableCollection<BucketAction>(Enum.GetValues<BucketAction>());
+
+            var debugTestDir = @"C:\Users\Haggi\Desktop\temp";
+            if (Debugger.IsAttached && Directory.Exists(debugTestDir))
             {
-                this.SourceDirectoryPath = @"C:\Users\Haggi\Desktop\temp";
+                this.SourceDirectoryPath = debugTestDir;
 
                 this.Buckets.Add(new BucketViewModel
                 {
@@ -127,7 +146,8 @@ namespace FastImageSorter.UI.UI.Sorting
 
             this.Buckets.Add(new BucketViewModel()
             {
-                Name = name
+                Name = name,
+                CanBeEdited = true,
             });
         }
 
@@ -154,7 +174,7 @@ namespace FastImageSorter.UI.UI.Sorting
                 if (bucket.Key == null)
                     messages.Add($"{safeName} does not have a key!");
 
-                if (string.IsNullOrWhiteSpace(bucket.TargetDirectoryPath))
+                if (string.IsNullOrWhiteSpace(bucket.TargetDirectoryPath) && (bucket.Action == BucketAction.Move || bucket.Action == BucketAction.Copy))
                     messages.Add($"{safeName} does not have a target directory!");
             }
 
