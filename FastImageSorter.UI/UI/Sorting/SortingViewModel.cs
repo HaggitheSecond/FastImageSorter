@@ -90,33 +90,17 @@ public class SortingViewModel : ViewModelBase
 
     private void ExecuteSorting()
     {
-        foreach (var bucket in this.SettingsViewModel.Buckets)
+        var viewModel = new SortingRunViewModel([.. this.SettingsViewModel.Buckets]);
+        var view = new SortingRunView()
         {
-            if (bucket.Action == BucketAction.Skip)
-                continue;
+            DataContext = viewModel,
+        };
 
-            foreach (var item in bucket.Items)
-            {
-                if (bucket.Action == BucketAction.Delete)
-                {
-                    File.Delete(item.Path);
-                    continue;
-                }
+        var result = view.ShowDialog();
 
-                var targetFileName = Path.Combine(bucket.TargetDirectoryPath, item.File.Name);
+        if (result.GetValueOrDefault())
+        {
 
-                if (File.Exists(targetFileName))
-                    continue;
-
-                if (bucket.Action == BucketAction.Move)
-                {
-                    File.Move(item.Path, targetFileName);
-                }
-                else
-                {
-                    File.Copy(item.Path, targetFileName);
-                }
-            }
         }
     }
 
