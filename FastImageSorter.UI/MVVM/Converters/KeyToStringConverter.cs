@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
 
-namespace FastImageSorter.UI.Converters
+namespace FastImageSorter.UI.MVVM.Converters
 {
     public class KeyToStringConverter : IValueConverter
     {
