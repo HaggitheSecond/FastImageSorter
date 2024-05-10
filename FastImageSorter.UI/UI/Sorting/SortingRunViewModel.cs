@@ -1,4 +1,5 @@
 ﻿using DevExpress.Mvvm;
+using FastImageSorter.UI.Common;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -20,6 +21,7 @@ namespace FastImageSorter.UI.UI.Sorting
 
         private int _finishedBucketCount;
         private int _finishedItemCount;
+        private ObservableCollection<BucketResultViewModel> _results;
 
         public ObservableCollection<BucketViewModel> Buckets
         {
@@ -63,6 +65,12 @@ namespace FastImageSorter.UI.UI.Sorting
             set { this.SetProperty(ref this._finishedItemCount, value, () => this.FinishedItemCount); }
         }
 
+        public ObservableCollection<BucketResultViewModel> Results
+        {
+            get { return this._results; }
+            set { this.SetProperty(ref this._results, value, () => this.Results); }
+        }
+
         public DelegateCommand CloseCommand { get; set; }
         public DelegateCommand CancelCommand { get; set; }
 
@@ -77,6 +85,8 @@ namespace FastImageSorter.UI.UI.Sorting
 
             this.TotalBucketCount = buckets.Count;
             this.TotalItemCount = buckets.SelectMany(f => f.Items).Count();
+
+            this.Results = new ObservableCollection<BucketResultViewModel>();
         }
 
         private bool CanClose()
@@ -105,40 +115,9 @@ namespace FastImageSorter.UI.UI.Sorting
             {
                 this.CurrentBucket = bucket;
 
-                if (bucket.Action != BucketAction.Skip)
-                {
-                    foreach (var item in bucket.Items)
-                    {
-                        this.CurrentItem = item;
+                this.Results.Add(await bucket.ExecuteSort());
 
-                        if (bucket.Action == BucketAction.Delete)
-                        {
-                            File.Delete(item.Path);
-                            continue;
-                        }
-
-                        var targetFileName = Path.Combine(bucket.TargetDirectoryPath, item.File.Name);
-
-                        if (File.Exists(targetFileName))
-                            continue;
-
-                        if (bucket.Action == BucketAction.Move)
-                        {
-                            File.Move(item.Path, targetFileName);
-                        }
-                        else
-                        {
-                            File.Copy(item.Path, targetFileName);
-                        }
-
-                        this.FinishedItemCount++;
-                    }
-                }
-                else
-                {
-                    this.FinishedItemCount += bucket.Items.Count;
-                }
-
+                this.FinishedItemCount += bucket.Items.Count;
                 this.FinishedBucketCount++;
             }
         }

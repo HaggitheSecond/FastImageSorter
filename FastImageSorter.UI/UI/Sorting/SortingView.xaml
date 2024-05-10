@@ -95,7 +95,7 @@
                     <DataTemplate>
                         <Grid Height="100">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="80" />
                                 <ColumnDefinition Width="10" />
                                 <ColumnDefinition Width="100" />
                                 <ColumnDefinition Width="10 " />

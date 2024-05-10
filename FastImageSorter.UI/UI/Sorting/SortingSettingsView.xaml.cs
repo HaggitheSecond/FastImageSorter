@@ -8,5 +8,13 @@ namespace FastImageSorter.UI.UI.Sorting
         {
             this.InitializeComponent();
         }
+
+        private void DataGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
+        {
+            if (((BucketViewModel)e.Row.Item).CanBeEdited == false)
+            {
+                e.Cancel = true;
+            }
+        }
     }
 }

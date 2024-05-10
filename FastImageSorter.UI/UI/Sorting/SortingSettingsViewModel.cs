@@ -1,4 +1,5 @@
 ﻿using DevExpress.Mvvm;
+using FastImageSorter.UI.Common;
 using FastImageSorter.UI.Helpers;
 using Microsoft.Win32;
 using System.Collections.ObjectModel;
@@ -97,14 +98,18 @@ namespace FastImageSorter.UI.UI.Sorting
                 {
                     Key = System.Windows.Input.Key.A,
                     Name = "Bucket A",
-                    TargetDirectoryPath = Path.Combine(this.SourceDirectoryPath, "A")
+                    TargetDirectoryPath = Path.Combine(this.SourceDirectoryPath, "A"),
+                    CanBeEdited = true,
+                    Action = BucketAction.Move,
                 });
 
                 this.Buckets.Add(new BucketViewModel
                 {
                     Key = System.Windows.Input.Key.B,
                     Name = "Bucket B",
-                    TargetDirectoryPath = Path.Combine(this.SourceDirectoryPath, "B")
+                    Action = BucketAction.Move,
+                    TargetDirectoryPath = Path.Combine(this.SourceDirectoryPath, "B"),
+                    CanBeEdited = true
                 });
             }
         }

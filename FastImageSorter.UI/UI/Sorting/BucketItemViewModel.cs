@@ -1,11 +1,6 @@
 ﻿using DevExpress.Mvvm;
-using System;
-using System.Collections.Generic;
+using FastImageSorter.UI.Common;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 
 namespace FastImageSorter.UI.UI.Sorting
@@ -15,8 +10,9 @@ namespace FastImageSorter.UI.UI.Sorting
         private FileInfo _file;
         private string _path;
         private string _name;
+        private BucketViewModel? _bucket;
 
-        private BitmapImage _image;
+        private BitmapImage? _image;
 
         public FileInfo File
         {
@@ -37,10 +33,16 @@ namespace FastImageSorter.UI.UI.Sorting
             set { this.SetProperty(ref this._name, value, () => this.Name); }
         }
 
-        public BitmapImage Image
+        public BitmapImage? Image
         {
             get { return this._image; }
             set { this.SetProperty(ref this._image, value, () => this.Image); }
+        }
+
+        public BucketViewModel? Bucket
+        {
+            get { return this._bucket; }
+            set { this.SetProperty(ref this._bucket, value, () => this.Bucket); }
         }
 
         public BucketItemViewModel(FileInfo fileInfo)
@@ -53,6 +55,54 @@ namespace FastImageSorter.UI.UI.Sorting
         public void Activate()
         {
             this.Image = new BitmapImage(new Uri(this.Path));
+        }
+
+        public void Deactivate()
+        {
+            this.Image = null;
+        }
+
+        public async Task<BucketItemResultViewModel> ExecuteSort(BucketViewModel bucket)
+        {
+            var result = new BucketItemResultViewModel
+            {
+                SourceFile = this.File
+            };
+
+            try
+            {
+                if (this.Bucket == null)
+                {
+                    result.Result = BucketItemResult.Failure;
+                    result.Exception = new Exception("No bucket set!");
+                }
+                else
+                {
+                    var targetFileName = System.IO.Path.Combine(bucket.TargetDirectoryPath, this.File.Name);
+
+                    switch (this.Bucket.Action)
+                    {
+                        case BucketAction.Skip:
+                            break;
+                        case BucketAction.Move:
+                            System.IO.File.Move(this.Path, targetFileName);
+                            break;
+                        case BucketAction.Copy:
+                            System.IO.File.Copy(this.Path, targetFileName);
+                            break;
+                        case BucketAction.Delete:
+                            System.IO.File.Delete(this.Path);
+                            break;
+                    }
+                }                
+            }
+            catch (Exception e)
+            {
+                result.Exception = e;
+                result.Result = BucketItemResult.Failure;
+            }
+
+            return result;
         }
     }
 }

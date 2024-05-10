@@ -18,6 +18,32 @@
             <RowDefinition Height="10" />
             <RowDefinition Height="100" />
         </Grid.RowDefinitions>
+        <StackPanel>
+            <TextBlock>
+                <Run Text="Working on bucket " />
+                <Run FontWeight="Bold" Text="{Binding FinishedBucketCount}" />
+                <Run FontWeight="Bold" Text="/" />
+                <Run FontWeight="Bold" Text="{Binding TotalBucketCount}" />
+            </TextBlock>
+            <StackPanel>
+                <TextBlock>
+                    <Run Text="{Binding CurrentBucket.Name}" />
+                </TextBlock>
+            </StackPanel>
+        </StackPanel>
+        <StackPanel Grid.Row="2">
+            <TextBlock>
+                <Run Text="Working on item " />
+                <Run FontWeight="Bold" Text="{Binding FinishedItemCount}" />
+                <Run FontWeight="Bold" Text="/" />
+                <Run FontWeight="Bold" Text="{Binding TotalItemCount}" />
+            </TextBlock>
+            <StackPanel>
+                <TextBlock>
+                    <Run Text="{Binding CurrentBucket.CurrentItem.Name}" />
+                </TextBlock>
+            </StackPanel>
+        </StackPanel>
         <Grid Grid.Row="4">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />

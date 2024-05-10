@@ -1,4 +1,5 @@
 ﻿using DevExpress.Mvvm;
+using FastImageSorter.UI.Common;
 using FastImageSorter.UI.UI.KeySelection;
 using FastImageSorter.UI.UI.Sorting;
 using Microsoft.Win32;
@@ -14,10 +15,12 @@ namespace FastImageSorter.UI.UI
 {
     public class BucketViewModel : ViewModelBase
     {
-		private string _name;
+        private string _name;
         private string _targetDirectoryPath;
         private Key? _key;
+
         private ObservableCollection<BucketItemViewModel> items;
+        private BucketItemViewModel _currentItem;
 
         private BucketAction _action;
         private ObservableCollection<BucketAction> _availableActions;
@@ -25,27 +28,33 @@ namespace FastImageSorter.UI.UI
         private bool _canBeEdited;
 
         public string Name
-		{
-			get { return this._name; }
-			set { this.SetProperty(ref this._name, value, () => this.Name); }
-		}
+        {
+            get { return this._name; }
+            set { this.SetProperty(ref this._name, value, () => this.Name); }
+        }
 
         public string TargetDirectoryPath
-		{
-			get { return this._targetDirectoryPath; }
-			set { this.SetProperty(ref this._targetDirectoryPath, value, () => this.TargetDirectoryPath); }
-		}
+        {
+            get { return this._targetDirectoryPath; }
+            set { this.SetProperty(ref this._targetDirectoryPath, value, () => this.TargetDirectoryPath); }
+        }
 
-		public Key? Key
-		{
-			get { return this._key; }
-			set { this.SetProperty(ref this._key, value, () => this.Key); }
-		}
+        public Key? Key
+        {
+            get { return this._key; }
+            set { this.SetProperty(ref this._key, value, () => this.Key); }
+        }
 
         public ObservableCollection<BucketItemViewModel> Items
         {
             get { return this.items; }
             set { this.SetProperty(ref this.items, value, () => this.Items); }
+        }
+
+        public BucketItemViewModel CurrentItem
+        {
+            get { return this._currentItem; }
+            set { this.SetProperty(ref this._currentItem, value, () => this.CurrentItem); }
         }
 
         public BucketAction Action
@@ -68,7 +77,7 @@ namespace FastImageSorter.UI.UI
 
         public DelegateCommand SetTargetDirectoryCommand { get; }
 
-		public DelegateCommand SetKeyCommand { get; }
+        public DelegateCommand SetKeyCommand { get; }
 
         public BucketViewModel()
         {
@@ -100,13 +109,21 @@ namespace FastImageSorter.UI.UI
                 this.TargetDirectoryPath = dialog.FolderName;
             }
         }
-    }
 
-    public enum BucketAction
-    {
-        Skip,
-        Move,
-        Copy,
-        Delete
+        public async Task<BucketResultViewModel> ExecuteSort()
+        {
+            var result = new BucketResultViewModel()
+            {
+                Bucket = this
+            };
+
+            foreach (var item in this.Items)
+            {
+                this.CurrentItem = item;
+                result.Results.Add(await item.ExecuteSort(this));
+            }
+
+            return result;
+        }
     }
 }

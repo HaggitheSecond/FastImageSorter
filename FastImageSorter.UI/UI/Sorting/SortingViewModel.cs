@@ -52,14 +52,7 @@ public class SortingViewModel : ViewModelBase
     public BucketItemViewModel SelectedUnsortedItem
     {
         get { return this._selectedUnsortedItem; }
-        set
-        {
-
-            if (value != null && value.Image == null)
-                value.Activate();
-
-            this.SetProperty(ref this._selectedUnsortedItem, value, () => this.SelectedUnsortedItem);
-        }
+        set { this.SetProperty(ref this._selectedUnsortedItem, value, () => this.SelectedUnsortedItem); }
     }
 
     public DelegateCommand ExecuteSortingCommand { get; }
@@ -81,6 +74,7 @@ public class SortingViewModel : ViewModelBase
 
         this.UnsortedItems = new ObservableCollection<BucketItemViewModel>(files.Select(f => new BucketItemViewModel(new FileInfo(f))));
         this.SelectedUnsortedItem = this.UnsortedItems.First();
+        this.SelectedUnsortedItem.Activate();
     }
 
     private bool CanExecuteSorting()
@@ -113,6 +107,11 @@ public class SortingViewModel : ViewModelBase
 
         if (bucket != null)
         {
+            if (this.SelectedUnsortedItem == null)
+                return;
+
+            this.SelectedUnsortedItem.Deactivate();
+            this.SelectedUnsortedItem.Bucket = bucket;
             bucket.Items.Add(this.SelectedUnsortedItem);
 
             this.UnsortedItems.RemoveAt(0);
@@ -121,6 +120,8 @@ public class SortingViewModel : ViewModelBase
                 this.SelectedUnsortedItem = null;
             else
                 this.SelectedUnsortedItem = this.UnsortedItems.First();
+
+            this.SelectedUnsortedItem?.Activate();
 
             this.FinishedImageCount++;
 

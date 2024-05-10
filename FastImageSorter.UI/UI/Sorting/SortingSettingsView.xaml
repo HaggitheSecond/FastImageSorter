@@ -74,7 +74,8 @@
                       AutoGenerateColumns="False"
                       CanUserAddRows="False"
                       ItemsSource="{Binding Buckets}"
-                      SelectedItem="{Binding SelectedBucket}">
+                      SelectedItem="{Binding SelectedBucket}"
+                      BeginningEdit="DataGrid_BeginningEdit">
                 <DataGrid.Columns>
                     <DataGridTextColumn Width="100"
                                         Binding="{Binding Name}"
