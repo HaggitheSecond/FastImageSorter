@@ -1,10 +1,7 @@
 ﻿namespace FastImageSorter.UI.Common
 {
-    public enum BucketItemResult
+    public record BucketItemResult(BucketItemResultType ResultType)
     {
-        None,
-        Sucess,
-        Failure,
-        Skipped
+        public Exception Exception { get; set; }
     }
 }

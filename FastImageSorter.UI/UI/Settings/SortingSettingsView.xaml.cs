@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace FastImageSorter.UI.UI.Sorting
+namespace FastImageSorter.UI.UI.Settings
 {
     public partial class SortingSettingsView : UserControl
     {
@@ -11,7 +11,7 @@ namespace FastImageSorter.UI.UI.Sorting
 
         private void DataGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
         {
-            if (((BucketViewModel)e.Row.Item).CanBeEdited == false)
+            if (((SortingSettingsBucketViewModel)e.Row.Item).CanBeEdited == false)
             {
                 e.Cancel = true;
             }

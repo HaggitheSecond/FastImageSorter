@@ -1,9 +1,9 @@
-﻿<UserControl x:Class="FastImageSorter.UI.UI.Sorting.SortingSettingsView"
+﻿<UserControl x:Class="FastImageSorter.UI.UI.Settings.SortingSettingsView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:conv="clr-namespace:FastImageSorter.UI.MVVM.Converters"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:FastImageSorter.UI.UI.Sorting"
+             xmlns:local="clr-namespace:FastImageSorter.UI.UI.Settings"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              d:DataContext="{d:DesignInstance Type=local:SortingSettingsViewModel}"
              d:DesignHeight="450"
@@ -72,10 +72,10 @@
             </Grid>
             <DataGrid Margin="0,5,0,0"
                       AutoGenerateColumns="False"
+                      BeginningEdit="DataGrid_BeginningEdit"
                       CanUserAddRows="False"
                       ItemsSource="{Binding Buckets}"
-                      SelectedItem="{Binding SelectedBucket}"
-                      BeginningEdit="DataGrid_BeginningEdit">
+                      SelectedItem="{Binding SelectedBucket}">
                 <DataGrid.Columns>
                     <DataGridTextColumn Width="100"
                                         Binding="{Binding Name}"

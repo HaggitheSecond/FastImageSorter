@@ -12,4 +12,8 @@
     <PackageReference Include="DevExpressMvvm" Version="23.2.3" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UI\Results\" />
+  </ItemGroup>
+
 </Project>

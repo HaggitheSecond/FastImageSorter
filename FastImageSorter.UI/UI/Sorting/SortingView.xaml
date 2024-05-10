@@ -56,7 +56,7 @@
                 <StackPanel>
                     <TextBlock HorizontalAlignment="Center"
                                FontSize="20"
-                               Text="{Binding SelectedUnsortedItem.Name}" />
+                               Text="{Binding SelectedUnsortedItem.File.Name}" />
                 </StackPanel>
             </StackPanel>
             <StackPanel VerticalAlignment="Center" Visibility="{Binding FinishedSorting, Converter={StaticResource BooleanToVisbilityConverter}}">

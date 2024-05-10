@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 
-namespace FastImageSorter.UI.UI.KeySelection
+namespace FastImageSorter.UI.UI.Settings
 {
 
     public partial class KeySelectionView : Window

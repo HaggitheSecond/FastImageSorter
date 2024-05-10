@@ -5,7 +5,12 @@ VisualStudioVersion = 17.9.34701.34
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FastImageSorter.UI", "FastImageSorter.UI\FastImageSorter.UI.csproj", "{0A1D2793-569E-4802-BBDD-04F703603F4E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastImageSorter.Tools", "FastImageSorter.Tools\FastImageSorter.Tools.csproj", "{D0A48215-69FF-45A9-8E3E-592369A6320E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FastImageSorter.Tools", "FastImageSorter.Tools\FastImageSorter.Tools.csproj", "{D0A48215-69FF-45A9-8E3E-592369A6320E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{620B9876-1091-49AB-8644-9A650195A2BA}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

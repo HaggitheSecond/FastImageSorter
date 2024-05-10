@@ -1,23 +1,22 @@
 ﻿using DevExpress.Mvvm;
+using FastImageSorter.UI.Common;
 using FastImageSorter.UI.Helpers;
-using System;
-using System.Collections.Generic;
+using FastImageSorter.UI.MVVM;
 using System.Collections.ObjectModel;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace FastImageSorter.UI.UI.Sorting;
-public class SortingViewModel : ViewModelBase
+
+public class SortingViewModel : WizardPageViewModel<SortingRun, SortingRun>
 {
     private int _totalImageCount;
     private int _finishedImageCount;
     private bool _finishedSorting;
-    private SortingSettingsViewModel _settingsViewModel;
-    private ObservableCollection<BucketItemViewModel> _unsortedItems;
-    private BucketItemViewModel _selectedUnsortedItem;
+    private ObservableCollection<SortingBucketItemViewModel> _unsortedItems;
+    private SortingBucketItemViewModel? _selectedUnsortedItem;
+
+    private SortingRun _sortingRun;
 
     public int TotalImageCount
     {
@@ -37,65 +36,53 @@ public class SortingViewModel : ViewModelBase
         set { this.SetProperty(ref this._finishedSorting, value, () => this.FinishedSorting); }
     }
 
-    public SortingSettingsViewModel SettingsViewModel
-    {
-        get { return this._settingsViewModel; }
-        set { this.SetProperty(ref this._settingsViewModel, value, () => this.SettingsViewModel); }
-    }
-
-    public ObservableCollection<BucketItemViewModel> UnsortedItems
+    public ObservableCollection<SortingBucketItemViewModel> UnsortedItems
     {
         get { return this._unsortedItems; }
         set { this.SetProperty(ref this._unsortedItems, value, () => this.UnsortedItems); }
     }
 
-    public BucketItemViewModel SelectedUnsortedItem
+    public SortingBucketItemViewModel? SelectedUnsortedItem
     {
         get { return this._selectedUnsortedItem; }
-        set { this.SetProperty(ref this._selectedUnsortedItem, value, () => this.SelectedUnsortedItem); }
+        set
+        {
+
+            this.SelectedUnsortedItem?.Deactivate();
+            value?.Activate();
+
+            this.SetProperty(ref this._selectedUnsortedItem, value, () => this.SelectedUnsortedItem);
+        }
     }
 
-    public DelegateCommand ExecuteSortingCommand { get; }
-    public DelegateCommand CancelSortingCommand { get; }
-
-    public event EventHandler FinishedSortingEvent;
-
-    public SortingViewModel(SortingSettingsViewModel sortingSettingsViewModel)
+    public SortingRun SortingRun
     {
-        this.ExecuteSortingCommand = new DelegateCommand(this.ExecuteSorting, this.CanExecuteSorting);
-        this.CancelSortingCommand = new DelegateCommand(() => this.FinishedSortingEvent?.Invoke(this, EventArgs.Empty));
+        get { return this._sortingRun; }
+        set { this.SetProperty(ref this._sortingRun, value, () => this.SortingRun); }
+    }
 
-        this.SettingsViewModel = sortingSettingsViewModel;
+    public SortingViewModel()
+        : base("Finish", "Cancel")
+    {
 
-        var files = DirectoryHelper.GetImageFiles(this.SettingsViewModel.SourceDirectoryPath);
+    }
+
+    public override void SetData(SortingRun data)
+    {
+        this.SortingRun = data;
+
+        var files = DirectoryHelper.GetImageFiles(data.SourceDirectoryPath);
 
         this.TotalImageCount = files.Count();
         this.FinishedImageCount = 0;
 
-        this.UnsortedItems = new ObservableCollection<BucketItemViewModel>(files.Select(f => new BucketItemViewModel(new FileInfo(f))));
+        this.UnsortedItems = new ObservableCollection<SortingBucketItemViewModel>(files.Select(f => new SortingBucketItemViewModel(new FileInfo(f))));
         this.SelectedUnsortedItem = this.UnsortedItems.First();
-        this.SelectedUnsortedItem.Activate();
     }
 
-    private bool CanExecuteSorting()
+    public override SortingRun GetData()
     {
-        return true;
-    }
-
-    private void ExecuteSorting()
-    {
-        var viewModel = new SortingRunViewModel([.. this.SettingsViewModel.Buckets]);
-        var view = new SortingRunView()
-        {
-            DataContext = viewModel,
-        };
-
-        var result = view.ShowDialog();
-
-        if (result.GetValueOrDefault())
-        {
-
-        }
+        return this.SortingRun;
     }
 
     public void SortItem(Key key)
@@ -103,16 +90,14 @@ public class SortingViewModel : ViewModelBase
         if (this.UnsortedItems.Count == 0)
             return;
 
-        var bucket = this.SettingsViewModel.Buckets.FirstOrDefault(b => b.Key == key);
+        var bucket = this.SortingRun.Buckets.FirstOrDefault(b => b.Action.Key == key);
 
         if (bucket != null)
         {
             if (this.SelectedUnsortedItem == null)
                 return;
 
-            this.SelectedUnsortedItem.Deactivate();
-            this.SelectedUnsortedItem.Bucket = bucket;
-            bucket.Items.Add(this.SelectedUnsortedItem);
+            bucket.Items.Add(this.SelectedUnsortedItem.ToItem());
 
             this.UnsortedItems.RemoveAt(0);
 

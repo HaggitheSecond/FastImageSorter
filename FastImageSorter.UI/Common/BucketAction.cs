@@ -1,10 +1,8 @@
-﻿namespace FastImageSorter.UI.Common
+﻿using System.Windows.Input;
+
+namespace FastImageSorter.UI.Common;
+
+public record BucketAction(BucketActionType Type, Key Key)
 {
-    public enum BucketAction
-    {
-        Skip,
-        Move,
-        Copy,
-        Delete
-    }
+    public string TargetDirectoryPath { get; set; }
 }
