@@ -89,4 +89,34 @@ public class SortingRunViewModel : WizardPageViewModel<SortingRun, SortingRun>
     {
         return this.SortingRun;
     }
+
+    public override WizardPageButton GetNext()
+    {
+        return new WizardPageButton("Finish sort", this.Next, this.CanNext);
+    }
+
+    private bool CanNext()
+    {
+        return false;
+    }
+
+    private async Task Next()
+    {
+
+    }
+
+    public override WizardPageButton GetPrevious()
+    {
+        return new WizardPageButton("Previous", this.Previous, this.CanPrevious);
+    }
+
+    private bool CanPrevious()
+    {
+        return false;
+    }
+
+    private async Task Previous()
+    {
+
+    }
 }

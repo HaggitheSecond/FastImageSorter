@@ -61,12 +61,6 @@ public class SortingViewModel : WizardPageViewModel<SortingRun, SortingRun>
         set { this.SetProperty(ref this._sortingRun, value, () => this.SortingRun); }
     }
 
-    public SortingViewModel()
-        : base("Finish", "Cancel")
-    {
-
-    }
-
     public override void SetData(SortingRun data)
     {
         this.SortingRun = data;
@@ -112,5 +106,15 @@ public class SortingViewModel : WizardPageViewModel<SortingRun, SortingRun>
 
             this.FinishedSorting = this.UnsortedItems.Count == 0;
         }
+    }
+
+    public override WizardPageButton GetNext()
+    {
+        return new WizardPageButton("Execute sorting", async () => { }, () => { return true; });
+    }
+
+    public override WizardPageButton GetPrevious()
+    {
+        return new WizardPageButton("Return", async () => { }, () => { return true; });
     }
 }

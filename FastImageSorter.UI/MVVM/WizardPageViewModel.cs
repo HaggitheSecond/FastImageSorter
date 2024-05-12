@@ -24,8 +24,12 @@ public abstract class WizardPageViewModel : ViewModelBase
 
     public abstract WizardPageButton GetNext();
     public abstract WizardPageButton GetPrevious();
-}
 
+    internal void Activate()
+    {
+        throw new NotImplementedException();
+    }
+}
 
 public record WizardPageButton(string InitalTitle, Func<Task> Execute, Func<bool> CanExecute);
 
@@ -43,5 +47,5 @@ public abstract class WizardPageViewModel<T, G> : WizardPageViewModel
 
 public abstract class WizardEndPageViewModel<T> : WizardPageViewModel
 {
-    public abstract T GetData();
+    public abstract void SetData(T data);
 }

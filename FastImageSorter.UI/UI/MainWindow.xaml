@@ -8,5 +8,5 @@
         Width="1200"
         Height="900"
         mc:Ignorable="d">
-    <Grid x:Name="MainContentGrid" />
+    <ContentControl x:Name="MainContentGrid" />
 </Window>

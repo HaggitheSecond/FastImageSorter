@@ -60,18 +60,12 @@ namespace FastImageSorter.UI.UI.Settings
         public DelegateCommand AddBucketCommand { get; set; }
         public DelegateCommand RemoveBucketCommand { get; set; }
 
-        public DelegateCommand AcceptCommand { get; set; }
-
-        public event EventHandler SettingsAcceptedEvent;
-
         public SortingSettingsViewModel()
         {
             this.SelectSourceDirectoryCommand = new DelegateCommand(this.SelectSourceDirectory);
 
             this.AddBucketCommand = new DelegateCommand(this.AddBucket, () => this.Buckets.Count <= 10);
             this.RemoveBucketCommand = new DelegateCommand(this.RemoveBucket, () => this.SelectedBucket != null && this.SelectedBucket.CanBeEdited);
-
-            this.AcceptCommand = new DelegateCommand(this.Accept);
         }
 
         private void SelectSourceDirectory()
@@ -117,7 +111,7 @@ namespace FastImageSorter.UI.UI.Settings
             });
         }
 
-        private void Accept()
+        private async Task Accept()
         {
             var messages = new List<string>();
 
@@ -150,27 +144,24 @@ namespace FastImageSorter.UI.UI.Settings
                 return;
             }
 
-            this.SettingsAcceptedEvent?.Invoke(this, new EventArgs());
+            this._sortingRun = new SortingRun(this.SourceDirectoryPath, this.Buckets.Select(f => f.ToBucket()).ToList());
         }
 
-        public override void SetData(string data)
-        {
-            
-        }
+        private SortingRun _sortingRun;
 
         public override SortingRun GetData()
         {
-            return new SortingRun(this.SourceDirectoryPath, this.Buckets.Select(f => f.ToBucket()).ToList());
+            return this._sortingRun;
         }
 
         public override WizardPageButton GetNext()
         {
-            return new WizardPageButton("")
+            return new WizardPageButton("", this.Accept, () => { return true; });
         }
 
         public override WizardPageButton GetPrevious()
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 }

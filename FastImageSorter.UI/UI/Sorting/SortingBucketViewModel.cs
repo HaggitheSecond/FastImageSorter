@@ -1,6 +1,5 @@
 ﻿using DevExpress.Mvvm;
 using FastImageSorter.UI.Common;
-using FastImageSorter.UI.UI.KeySelection;
 using FastImageSorter.UI.UI.Sorting;
 using Microsoft.Win32;
 using System;

@@ -25,7 +25,7 @@
             </TextBlock>
             <StackPanel>
                 <TextBlock>
-                    <Run Text="{Binding CurrentBucket.Name}" />
+                    <Run Text="{Binding CurrentBucket.Bucket.Name}" />
                 </TextBlock>
             </StackPanel>
         </StackPanel>
@@ -38,7 +38,7 @@
             </TextBlock>
             <StackPanel>
                 <TextBlock>
-                    <Run Text="{Binding CurrentBucket.CurrentItem.Name}" />
+                    <Run Text="{Binding CurrentBucket.CurrentItem}" />
                 </TextBlock>
             </StackPanel>
         </StackPanel>
